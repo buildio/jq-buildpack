@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+echo "---> Jq Buildpack"
+
+layersdir=$1
+
+jqlayer="$layersdir"/jq
+mkdir -p "$jqlayer"/bin
+
+echo "---> Downloading JQ"
+cd "$jqlayer"/bin
+jq_url=https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+wget -q -O jq "$jq_url"
+chmod +x jq
+
+# Write layer file, making jq available on launch
+echo -e '[types]\nlaunch = true' > "$layersdir/jq.toml"
+
+# Write layer file, making jq available on launch
+export PATH="$jqlayer"/bin:$PATH
